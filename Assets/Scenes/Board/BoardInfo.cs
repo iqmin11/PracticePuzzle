@@ -392,12 +392,12 @@ public class BoardInfo : MonoBehaviour
             () =>
             {
                 Debug.Log("DestroyTileState Start");
+                StartCoroutine(DelayChangeState(BoardFSM.ChangeState, "SettingsState", WaitTime));
             },
 
             () =>
             {
                 DestroyTile();
-                StartCoroutine(DelayChangeState(BoardFSM.ChangeState, "SettingsState", WaitTime));
             },
 
             () =>
