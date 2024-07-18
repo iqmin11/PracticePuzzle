@@ -30,6 +30,8 @@ public class BoardInfo : MonoBehaviour
     private List<Vector2Int> ClickPos = new List<Vector2Int>();
     private List<Vector2Int> DestroyStart = new List<Vector2Int>();
     private List<int> DestroyCount = new List<int>(8);
+    
+    private WaitForSeconds WaitTime;
 
 
     //Debug//////////////////////////
@@ -49,6 +51,11 @@ public class BoardInfo : MonoBehaviour
     }
 
     //Init//////////////////////////
+    private void Awake()
+    {
+        WaitTime = new WaitForSeconds(0.5f);
+    }
+
     void Start()
     {
         Debug.Log("BoardInfo Start");
@@ -295,9 +302,9 @@ public class BoardInfo : MonoBehaviour
 
     public delegate void Notify(string Param);
 
-    IEnumerator DelayChangeState(Notify Callback, string Param, float Time)
+    IEnumerator DelayChangeState(Notify Callback, string Param, WaitForSeconds Time)
     {
-        yield return new WaitForSeconds(Time);
+        yield return Time;
         Callback(Param);
     }
 
@@ -390,9 +397,7 @@ public class BoardInfo : MonoBehaviour
             () =>
             {
                 DestroyTile();
-                StartCoroutine(DelayChangeState(BoardFSM.ChangeState, "SettingsState", 0.5f));
-                DelayChangeState(BoardFSM.ChangeState, "SettingsState", 0.5f);
-                //BoardFSM.ChangeState("SettingsState");
+                StartCoroutine(DelayChangeState(BoardFSM.ChangeState, "SettingsState", WaitTime));
             },
 
             () =>
