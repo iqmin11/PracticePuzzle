@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net.Http.Headers;
+using Unity.Burst.Intrinsics;
 using Unity.VisualScripting;
 using Unity.VisualScripting.FullSerializer;
 using UnityEngine;
@@ -74,6 +75,7 @@ public class BoardInfo : MonoBehaviour
         {
             DestroyCount.Add(0);
         }
+
     }
 
     private void SpawnTiles()
@@ -291,6 +293,14 @@ public class BoardInfo : MonoBehaviour
         }
     }
 
+    public delegate void Notify(string Param);
+
+    IEnumerator DelayChangeState(Notify Callback, string Param, float Time)
+    {
+        yield return new WaitForSeconds(Time);
+        Callback(Param);
+    }
+
     //FSM//////////////////////////
     private void PlayStateInit()
     {
@@ -380,7 +390,9 @@ public class BoardInfo : MonoBehaviour
             () =>
             {
                 DestroyTile();
-                BoardFSM.ChangeState("SettingsState");
+                StartCoroutine(DelayChangeState(BoardFSM.ChangeState, "SettingsState", 0.5f));
+                DelayChangeState(BoardFSM.ChangeState, "SettingsState", 0.5f);
+                //BoardFSM.ChangeState("SettingsState");
             },
 
             () =>
